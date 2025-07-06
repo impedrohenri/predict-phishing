@@ -47,7 +47,6 @@ features_names = [
     "Pontuação_TF_IDF_baseada_em_caracteres_na_URL"
 ]
 
-
 # Inicializa o explicador SHAP (TreeExplainer para CatBoost)
 explainer = shap.TreeExplainer(ML_model)
 
