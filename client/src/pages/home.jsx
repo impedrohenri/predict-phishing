@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Button, Form, InputGroup, Spinner } from 'react-bootstrap';
 import dict from '../data/featuresDictionary.json'
 import FeatureDescription from '../components/FeatureDescription';
 
@@ -12,41 +13,45 @@ const PhishingDetector = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    document.title = "¿estoy seguro?"
+    document.title = "Isso é seguro?"
 
     const analyzeUrl = (event) => {
         event.preventDefault();
         setLoading(true)
         const formData = new FormData(document.getElementById('formURL'));
-        console.log(dict)
-        console.log(dict[0])
-        console.log(dict[0].ti)
 
 
-        fetch("http://127.0.0.1:5000/", {
-            method: "POST",
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => { setAnalysis(data); setLoading(false) })
-            .catch(err => { console.error(err); setError(err) });
+        try {
+            fetch("http://127.0.0.1:5000/", {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => { 
+                    setAnalysis(data);
+                    setLoading(false);
+                 })
+                .catch(err => { console.error(err); setError(err) });
+        } catch (erro) {
+            setError(erro);
+        }
     };
 
     const getChartData = () => {
         if (!analysis?.importancia_features) return null;
 
-        // Primeiro criamos um mapa do dicionário para acesso rápido
+
         const featureMap = {};
         dict.forEach(item => {
             featureMap[item.feat_name] = item.title;
         });
 
         const features = Object.entries(analysis.importancia_features)
-            .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])) // Ordena por importância absoluta
-            .slice(0, 10); // Pega as 10 mais relevantes
+            .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+            .slice(0, 10);
 
         return {
-            labels: features.map(([key]) => featureMap[key] || key), // Usa o título do dicionário ou o nome original
+            labels: features.map(([key]) => featureMap[key] || key),
             datasets: [{
                 label: 'Importância',
                 data: features.map(([, value]) => value),
@@ -106,32 +111,27 @@ const PhishingDetector = () => {
                         <form onSubmit={analyzeUrl} id='formURL'>
                             <div>
                                 <label htmlFor="url-input" className="block text-sm font-medium text-gray-700 mb-1">
-                                    URL para análise
+                                    Insira a o Link a ser analisado.
                                 </label>
-                                <div className="flex rounded-md shadow-sm">
-                                    <input
-                                        type="url"
-                                        id="url-input"
-                                        className="flex-1 min-w-0 block w-full px-4 py-3 rounded-l-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="https://exemplo.com"
-                                        name='url'
-                                    />
-                                    <button
-                                        type='submit'
-                                        disabled={loading}
-                                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
-                                    >
-                                        {loading ? (
+                                
+                                    <InputGroup className="mb-3 rounded-pill" size="lg">
+                                        <Form.Control
+                                            className='rounded-start-pill'
+                                            placeholder="https://exemplo.com"
+                                            name='url'
+                                            required
+                                        />
+                                        <Button className='rounded-end-pill text-sm' variant="primary" id="button-addon2" type='submit'>
+                                            {loading ? (
                                             <>
-                                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
+                                                <Spinner animation="border" variant="light" size='sm' className='me-2' />
                                                 Analisando...
                                             </>
                                         ) : 'Analisar'}
-                                    </button>
-                                </div>
+                                        </Button>
+                                    </InputGroup>
+
+                                
                             </div>
                         </form>
                     </div>
@@ -156,48 +156,43 @@ const PhishingDetector = () => {
                 {/* Resultados da análise */}
                 {analysis && (
                     <div className="space-y-8">
-                        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                            <div className="px-6 py-5 bg-gray-50 border-b border-gray-200">
-                                <h2 className="text-lg font-semibold text-gray-900">Resultado da Análise</h2>
+
+                        <div className={`bg-white rounded-xl shadow-md overflow-hidden rounded-3xl ring-4 ${analysis.valor === 'Phishing' ? 'ring-red-600/40' : 'ring-green-600/40'}`} id='predictCard'>
+                            <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+                                <span className="fs-5 font-semibold text-gray-900">Resultado da Análise</span>
                             </div>
-                            <div className="p-6">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-500">URL analisada</p>
-                                        <p className="mt-1 text-sm text-gray-900 break-all">{analysis.url}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-500">Classificação</p>
-                                        <div className="mt-1">
-                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${analysis.valor === 'Phishing' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                                                }`}>
-                                                {analysis.valor}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-500">Confiança</p>
-                                        <div className="mt-2">
-                                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                                <div
-                                                    className={`h-2.5 rounded-full ${analysis.valor === 'Phishing' ? 'bg-red-600' : 'bg-green-600'
-                                                        }`}
-                                                    style={{ width: `${analysis.probabilities}%` }}
-                                                ></div>
-                                            </div>
-                                            <p className="mt-1 text-sm text-gray-700 text-right">
-                                                {analysis.probabilities}% de probabilidade
-                                            </p>
-                                        </div>
-                                    </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 p-6">
+
+                                <div className='col-span-3 text-md'>
+                                    <p className="font-medium text-gray-500 mb-2">Classificação</p>
+                                    <span className={`inline-flex my-auto items-center px-7 py-1 rounded-full text-lg font-medium ${analysis.valor === 'Phishing' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                                        }`}>
+                                        {analysis.valor}
+                                    </span>
                                 </div>
+
+                                <div className='col-span-2'>
+                                    <p className="text-sm font-medium text-gray-500 mb-2">Taxa de Probabilidade</p>
+                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div
+                                            className={`h-2.5 rounded-full ${analysis.valor === 'Phishing' ? 'bg-red-600' : 'bg-green-600'
+                                                }`}
+                                            style={{ width: `${analysis.probabilities}%` }}
+                                        ></div>
+                                    </div>
+                                    <p className="mt-1 text-sm text-gray-700 text-right">
+                                        {analysis.probabilities}% de probabilidade
+                                    </p>
+                                </div>
+
                             </div>
                         </div>
 
+                        <div className="bg-white rounded-xl shadow-md overflow-hidden px-6 bg-gray-50 border-b border-gray-200">
 
+                            <div className="fs-5 font-semibold text-gray-900 my-3">Fatores Determinantes</div>
 
-                        <div className="bg-white rounded-xl shadow-md overflow-hidden px-6 py-5 bg-gray-50 border-b border-gray-200">
-                            <h2 className="text-lg font-semibold text-gray-900">Fatores Determinantes</h2>
                             <p className="mt-1 text-sm text-gray-500">
                                 Principais características que influenciaram o resultado
                             </p>

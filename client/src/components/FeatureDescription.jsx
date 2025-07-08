@@ -5,12 +5,12 @@ export default function FeatureDescription() {
         <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg">
 
             <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-gray-50 border-b border-gray-100">
-                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <div className="text-2xl font-bold text-gray-800 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Como interpretar os resultados
-                </h2>
+                </div>
             </div>
 
             <div className="p-6 space-y-8">
@@ -48,7 +48,7 @@ export default function FeatureDescription() {
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-gray-800 mb-3">O que significa cada fator?</h3>
-                            <ul className="space-y-4">
+                            <ul className="space-y-4 ps-0">
                                 {dict.map((feat) => (
                                     <li key={feat.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                         <span className="block font-medium text-gray-900">{feat.title}</span>
