@@ -1,8 +1,8 @@
 import dict from '../data/featuresDictionary.json';
 
-export default function FeatureDescription() {
+export default function FeatureDescription({textoDestaque, setTextoDestaque, url}) {
     return (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg">
+        <div className="bg-white rounded-5 shadow-md overflow-hidden transition-all hover:shadow-lg">
 
             <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-gray-50 border-b border-gray-100">
                 <div className="text-2xl font-bold text-gray-800 flex items-center gap-2">
@@ -50,9 +50,10 @@ export default function FeatureDescription() {
                             <h3 className="text-lg font-semibold text-gray-800 mb-3">O que significa cada fator?</h3>
                             <ul className="space-y-4 ps-0">
                                 {dict.map((feat) => (
-                                    <li key={feat.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <li key={feat.id} className="d-flex flex-column p-4 bg-gray-50 rounded-lg transition-colors" >
                                         <span className="block font-medium text-gray-900">{feat.title}</span>
                                         <span className="block text-gray-600 mt-1">{feat.description}</span>
+                                        {feat.textoDestaque.length > 0 && feat.textoDestaque[0] !== "" && <button className={`ms-auto text-sm fw-bold btn btn-outline-primary mt-2 py-1 rounded-pill`} style={{ cursor: 'pointer'}} onClick={() => {setTextoDestaque(feat.textoDestaque)}} disabled={!url.includes(feat.textoDestaque[0])}>Visualizar na URL</button>}
                                     </li>
                                 ))}
                             </ul>

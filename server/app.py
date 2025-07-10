@@ -49,6 +49,8 @@ features_names = [
 
 # Inicializa o explicador SHAP (TreeExplainer para CatBoost)
 explainer = shap.TreeExplainer(ML_model)
+explainer_percentage = shap.TreeExplainer(ML_model, model.x_treino, model_output='probability', feature_perturbation='interventional')
+
 
 @app.route("/", methods=['POST'])
 def predict():
@@ -63,14 +65,20 @@ def predict():
     probabilities = ML_model.predict_proba(url_data)[0]
     probabilities = f"{np.max(probabilities) * 100:.1f}"
     
-    # SHAP values (importância local das features para essa predição)
+    
+    # retorna importância em Log-odd
     shap_values = explainer.shap_values(array_features)
-
     shap_values_sample = shap_values[0]  # shape (33,)
-
-    # Cria o dicionário de importância com os nomes das features
     dict_importancia = {
         features_names[i]: shap_values_sample[i]
+        for i in range(len(features_names))
+    }
+
+    # retorna importância em Porcentagem
+    shap_values_percentage = explainer_percentage.shap_values(array_features)
+    shap_values_sample_percentage = shap_values_percentage[0]  # shape (33,)
+    dict_importancia_percentage = {
+        features_names[i]: shap_values_sample_percentage[i]*100
         for i in range(len(features_names))
     }
 
@@ -78,7 +86,8 @@ def predict():
     "url": url,
     "valor": valor,
     "probabilities": probabilities,
-    "importancia_features": dict_importancia
+    "importancia_features": dict_importancia,
+    "importancia_features_porcentagem": dict_importancia_percentage
     }
 
 

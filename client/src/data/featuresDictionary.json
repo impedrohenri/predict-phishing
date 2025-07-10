@@ -2,166 +2,199 @@
     {
         "feat_name": "Quantidade_de_pontos_na_URL",
         "title": "Quantidade de Pontos",
-        "description": "Número de pontos (.) na URL, onde muitos pontos podem indicar tentativa de imitar domínios legítimos."
+        "description": "Número de pontos (.) na URL, onde muitos pontos podem indicar tentativa de imitar domínios legítimos.",
+        "textoDestaque": ["."]
     },
     {
         "feat_name": "Nível_de_subdomínio",
         "title": "Níveis de Subdomínio",
-        "description": "Quantidade de subdomínios na URL (ex: 'mail.site.com' tem 2 níveis). Muitos subdomínios podem ser suspeitos."
+        "description": "Quantidade de subdomínios na URL (ex: 'mail.site.com' tem 2 níveis). Muitos subdomínios podem ser suspeitos.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Níveis_no_caminho_da_URL",
         "title": "Profundidade do Caminho",
-        "description": "Número de segmentos no caminho da URL (ex: '/a/b/c' tem 3 níveis). Caminhos muito profundos são incomuns."
+        "description": "Número de segmentos no caminho da URL (ex: '/a/b/c' tem 3 níveis). Caminhos muito profundos são incomuns.",
+        "textoDestaque": ["/"]
     },
     {
         "feat_name": "Comprimento_total_da_URL",
         "title": "Comprimento da URL",
-        "description": "Tamanho total da URL em caracteres. URLs muito longas podem conter tentativas de ofuscação."
+        "description": "Tamanho total da URL em caracteres. URLs muito longas podem conter tentativas de ofuscação.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Quantidade_de_hifens_na_URL",
         "title": "Quantidade de Hífens",
-        "description": "Número de hífens (-) na URL. Muitos hífens são incomuns em URLs legítimas."
+        "description": "Número de hífens (-) na URL. Muitos hífens são incomuns em URLs legítimas.",
+        "textoDestaque": ["-"]
     },
     {
         "feat_name": "Quantidade_de_hifens_no_domínio_principal",
         "title": "Hífens no Domínio",
-        "description": "Quantidade de hífens no domínio principal. Domínios legítimos raramente usam hífens."
+        "description": "Quantidade de hífens no domínio principal. Domínios legítimos raramente usam hífens.",
+        "textoDestaque": ["-"]
     },
     {
         "feat_name": "Símbolo_arroba_em_posição_suspeita",
         "title": "Arroba Suspeita",
-        "description": "Presença do símbolo @ fora do contexto de credenciais (ex: 'user@site.com' é normal, mas 'site@evil.com' é suspeito)."
+        "description": "Presença do símbolo @ fora do contexto de credenciais (ex: 'user@site.com' é normal, mas 'site@evil.com' é suspeito).",
+        "textoDestaque": ["@"]
     },
     {
         "feat_name": "Uso_suspeito_de_til_na_URL",
         "title": "Til Suspeito",
-        "description": "Presença do caractere ~ seguido de texto, que pode indicar diretórios ocultos ou ofuscação."
+        "description": "Presença do caractere ~ seguido de texto, que pode indicar diretórios ocultos ou ofuscação.",
+        "textoDestaque": ["~"]
     },
     {
         "feat_name": "Quantidade_de_sublinhados_na_URL",
         "title": "Sublinhados na URL",
-        "description": "Quantidade de underlines (_) na URL. Pouco comum em URLs legítimas."
+        "description": "Quantidade de underlines (_) na URL. Pouco comum em URLs legítimas.",
+        "textoDestaque": ["_"]
     },
     {
         "feat_name": "Número_de_componentes_de_query",
         "title": "Parâmetros de Consulta",
-        "description": "Número de parâmetros únicos na query string (ex: '?a=1&b=2' tem 2 componentes). Muitos parâmetros podem ser suspeitos."
+        "description": "Número de parâmetros únicos na query string (ex: '?a=1&b=2' tem 2 componentes). Muitos parâmetros podem ser suspeitos.",
+        "textoDestaque": ["?"]
     },
     {
         "feat_name": "Quantidade_de_ampersands_na_URL",
         "title": "Ampersands na URL",
-        "description": "Quantidade de símbolos & não codificados na URL. Usado para separar parâmetros, mas muitos podem ser suspeitos."
+        "description": "Quantidade de símbolos & não codificados na URL. Usado para separar parâmetros, mas muitos podem ser suspeitos.",
+        "textoDestaque": ["&"]
     },
     {
         "feat_name": "Sequências_numéricas_longas",
         "title": "Sequências Numéricas",
-        "description": "Presença de sequências com 4+ dígitos (ex: 'id=12345'), comum em URLs maliciosas para parecerem autênticas."
+        "description": "Presença de sequências com 4+ dígitos (ex: 'id=12345'), comum em URLs maliciosas para parecerem autênticas.",
+        "textoDestaque": ["12345"]
     },
     {
         "feat_name": "Protocolo_inseguro_ou_ausente",
-        "title": "Protocolo Inseguro",
-        "description": "Indica se a URL não usa HTTPS (0 = seguro, 1 = HTTP ou ausente). Sites legítimos sempre usam HTTPS."
+        "title": "Protocolo de Segurança",
+        "description": "Indica se a URL não usa HTTPS (0 = seguro, 1 = HTTP ou ausente). Sites legítimos sempre usam HTTPS.",
+        "textoDestaque": ["https://", "http://"]
     },
     {
         "feat_name": "Presença_de_endereço_IP_na_URL",
         "title": "Endereço IP na URL",
-        "description": "Se o hostname é um endereço IP (1) em vez de nome de domínio (0). URLs legítimas raramente usam IPs diretamente."
+        "description": "Se o hostname é um endereço IP (1) em vez de nome de domínio (0). URLs legítimas raramente usam IPs diretamente.",
+        "textoDestaque": ["192.168.1.1"]
     },
     {
         "feat_name": "Comprimento_total_do_domínio_registrado",
         "title": "Comprimento do Domínio",
-        "description": "Tamanho do domínio principal. Domínios muito longos ou muito curtos podem ser suspeitos."
+        "description": "Tamanho do domínio principal. Domínios muito longos ou muito curtos podem ser suspeitos.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Comprimento_total_do_caminho",
         "title": "Comprimento do Caminho",
-        "description": "Tamanho do caminho após normalização. Caminhos excessivamente longos são incomuns."
+        "description": "Tamanho do caminho após normalização. Caminhos excessivamente longos são incomuns.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Comprimento_total_da_query",
         "title": "Comprimento da Consulta",
-        "description": "Tamanho da query string. Queries muito longas podem conter código malicioso."
+        "description": "Tamanho da query string. Queries muito longas podem conter código malicioso.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Barras_duplas_no_caminho",
         "title": "Barras Duplas",
-        "description": "Presença de // no caminho (após o protocolo). Pode indicar tentativa de confundir o usuário."
+        "description": "Presença de // no caminho (após o protocolo). Pode indicar tentativa de confundir o usuário.",
+        "textoDestaque": ["//"]
     },
     {
         "feat_name": "Número_de_palavras_chave_relacionadas_a_phishing",
         "title": "Palavras-chave de Phishing",
-        "description": "Contagem de termos associados a phishing como 'login', 'senha', 'urgente' na URL."
+        "description": "Contagem de termos associados a phishing como 'login', 'senha', 'urgente' na URL.",
+        "textoDestaque": ["urgency"]
     },
     {
         "feat_name": "Uso_de_nomes_de_marcas_embutidos_com_homógrafos",
         "title": "Marcas Falsas",
-        "description": "Detecta uso de nomes de marcas com caracteres similares (homógrafos) para enganar usuários."
+        "description": "Detecta uso de nomes de marcas com caracteres similares (homógrafos) para enganar usuários.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Sequências_repetidas_de_caracteres_ou_números",
         "title": "Caracteres Repetidos",
-        "description": "Sequências de 3+ caracteres/números repetidos (ex: 'aaa', '111'), comum em URLs falsas."
+        "description": "Sequências de 3+ caracteres/números repetidos (ex: 'aaa', '111'), comum em URLs falsas.",
+        "textoDestaque": ["aaa"]
     },
     {
         "feat_name": "Entropia_do_domínio_indicando_aleatoriedade",
         "title": "Aleatoriedade do Domínio",
-        "description": "Mede quão aleatório é o domínio. Alta entropia sugere domínios gerados automaticamente."
+        "description": "Mede quão aleatório é o domínio. Alta entropia sugere domínios gerados automaticamente.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Balanceamento_entre_letras_e_dígitos_no_domínio",
         "title": "Letras vs Dígitos",
-        "description": "Proporção entre letras e números no domínio. Domínios legítimos têm mais letras."
+        "description": "Proporção entre letras e números no domínio. Domínios legítimos têm mais letras.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Presença_de_extensões_de_arquivos_suspeitas",
         "title": "Extensões Suspeitas",
-        "description": "Presença de extensões perigosas como .exe, .js, .php no caminho da URL."
+        "description": "Presença de extensões perigosas como .exe, .js, .php no caminho da URL.",
+        "textoDestaque": [".exe"]
     },
     {
         "feat_name": "Palavras_suspeitas_nos_parâmetros_da_query",
         "title": "Parâmetros Suspeitos",
-        "description": "Parâmetros de query suspeitos como 'cmd', 'exec', 'debug' que podem indicar exploração."
+        "description": "Parâmetros de query suspeitos como 'cmd', 'exec', 'debug' que podem indicar exploração.",
+        "textoDestaque": ["cmd", "exec"]
     },
     {
         "feat_name": "TLD_associado_a_país_em_vez_de_genérico",
         "title": "TLD de País",
-        "description": "Se o TLD é específico de país (.br, .ru) em vez de genérico (.com, .org). Alguns países são alvos frequentes."
+        "description": "Se o TLD é específico de país (.br, .ru) em vez de genérico (.com, .org). Alguns países são alvos frequentes.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Variação_no_tamanho_dos_subdomínios",
         "title": "Variação de Subdomínios",
-        "description": "Diferença entre maior e menor subdomínio. Grandes variações podem ser artificiais."
+        "description": "Diferença entre maior e menor subdomínio. Grandes variações podem ser artificiais.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Segmentos_repetidos_no_caminho_da_URL",
         "title": "Segmentos Repetidos",
-        "description": "Partes do caminho que se repetem (ex: '/a/a/'). Pode indicar tentativa de ofuscação."
+        "description": "Partes do caminho que se repetem (ex: '/a/a/'). Pode indicar tentativa de ofuscação.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Proporção_de_consoantes_em_relacao_ao_domínio",
         "title": "Proporção de Consoantes",
-        "description": "Razão entre consoantes e vogais no domínio. Proporções anormais são suspeitas."
+        "description": "Razão entre consoantes e vogais no domínio. Proporções anormais são suspeitas.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Termos_de_autenticacao_presentes_no_caminho",
         "title": "Termos de Autenticação",
-        "description": "Palavras como 'login', 'signin' no caminho. Pode ser legítimo, mas também alvo de phishing."
+        "description": "Palavras como 'login', 'signin' no caminho. Pode ser legítimo, mas também alvo de phishing.",
+    "textoDestaque": ["login", "signin", "account"]
     },
     {
         "feat_name": "Quantidade_de_dígitos_no_domínio_principal",
         "title": "Dígitos no Domínio",
-        "description": "Quantidade de números no domínio. Domínios legítimos raramente têm muitos dígitos."
+        "description": "Quantidade de números no domínio. Domínios legítimos raramente têm muitos dígitos.",
+        "textoDestaque": ["123"]
     },
     {
         "feat_name": "Ocorrências_de_strings_ofuscadas_hex_base64_ou_IP_decimal",
         "title": "Strings Ofuscadas",
-        "description": "Presença de codificação suspeita como hexadecimal, Base64 ou IP em formato decimal."
+        "description": "Presença de codificação suspeita como hexadecimal, Base64 ou IP em formato decimal.",
+        "textoDestaque": [""]
     },
     {
         "feat_name": "Pontuação_TF_IDF_baseada_em_caracteres_na_URL",
         "title": "Pontuação TF-IDF",
-        "description": "Medida estatística que avalia quão incomuns são combinações de caracteres na URL."
+        "description": "Medida estatística que avalia quão incomuns são combinações de caracteres na URL.",
+        "textoDestaque": [""]
     }
 ]

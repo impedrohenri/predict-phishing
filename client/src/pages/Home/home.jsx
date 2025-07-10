@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Button, Form, InputGroup, Spinner } from 'react-bootstrap';
-import dict from '../data/featuresDictionary.json'
-import FeatureDescription from '../components/FeatureDescription';
+import { Button, Card, Form, InputGroup, Spinner } from 'react-bootstrap';
+import dict from '../../data/featuresDictionary.json'
+import FeatureDescription from '../../components/FeatureDescription';
+import TextoComCaracteresColoridos from '../../components/URLDestacada';
+import HighlightFeaturesInText from '../../components/URLDestacada';
+import TextoComPalavrasDestacadas from '../../components/URLDestacada';
 
 // Configuração do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -12,8 +15,26 @@ const PhishingDetector = () => {
     const [analysis, setAnalysis] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [textoDestaque, setTextoDestaque] = useState('');
+    const URLanalisys = useRef(null);
 
-    document.title = "Isso é seguro?"
+    useEffect(() => {
+        const el = URLanalisys.current;
+        if (!el) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                el.classList.toggle("is-pinned", entry.intersectionRatio < 1);
+            },
+            { threshold: [1] }
+        );
+
+        observer.observe(el);
+
+        return () => observer.disconnect();
+    }, [analysis]);
+
+
 
     const analyzeUrl = (event) => {
         event.preventDefault();
@@ -27,10 +48,10 @@ const PhishingDetector = () => {
                 body: formData
             })
                 .then(res => res.json())
-                .then(data => { 
+                .then(data => {
                     setAnalysis(data);
                     setLoading(false);
-                 })
+                })
                 .catch(err => { console.error(err); setError(err) });
         } catch (erro) {
             setError(erro);
@@ -39,14 +60,15 @@ const PhishingDetector = () => {
 
     const getChartData = () => {
         if (!analysis?.importancia_features) return null;
-
-
         const featureMap = {};
         dict.forEach(item => {
             featureMap[item.feat_name] = item.title;
         });
 
-        const features = Object.entries(analysis.importancia_features)
+        const invert = analysis.valor === "Legitimo";
+
+        const features = Object.entries(analysis.importancia_features_porcentagem)
+            .map(([key, value]) => [key, invert ? -value : value]) // Inverte os valores se for legítimo
             .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
             .slice(0, 10);
 
@@ -56,10 +78,14 @@ const PhishingDetector = () => {
                 label: 'Importância',
                 data: features.map(([, value]) => value),
                 backgroundColor: features.map(([, value]) =>
-                    value > 0 ? 'rgba(255, 38, 38, 0.85)' : 'rgba(16, 185, 129, 0.7)'
+                    value > 0
+                        ? (invert ? 'rgba(16, 185, 129, 0.7)' : 'rgba(255, 38, 38, 0.85)')
+                        : (invert ? 'rgba(255, 38, 38, 0.85)' : 'rgba(16, 185, 129, 0.7)')
                 ),
                 borderColor: features.map(([, value]) =>
-                    value > 0 ? 'rgba(255, 38, 38, 1)' : 'rgba(16, 185, 129, 1)'
+                    value > 0
+                        ? (invert ? 'rgba(16, 185, 129, 1)' : 'rgba(255, 38, 38, 1)')
+                        : (invert ? 'rgba(255, 38, 38, 1)' : 'rgba(16, 185, 129, 1)')
                 ),
                 borderWidth: 1
             }]
@@ -73,11 +99,18 @@ const PhishingDetector = () => {
             tooltip: {
                 callbacks: {
                     label: (ctx) => {
-                        const label = ctx.dataset.label || '';
-                        const value = ctx.raw > 0 ?
-                            `Aumenta risco em ${Math.abs(ctx.raw).toFixed(2)}` :
-                            `Reduz risco em ${Math.abs(ctx.raw).toFixed(2)}`;
-                        return `${label}: ${value}`;
+                        const { raw } = ctx;
+                        const valor = Math.abs(raw).toFixed(2);
+
+                        const aumenta = `Aumenta risco em ${valor}%`;
+                        const reduz = `Reduz risco em ${valor}%`;
+
+                        // Aplica a lógica do invert
+                        const texto = raw > 0
+                            ? (analysis.valor === "Legitimo" ? reduz : aumenta)
+                            : (analysis.valor === "Legitimo" ? aumenta : reduz);
+
+                        return `${ctx.dataset.label || ''}: ${texto}`;
                     }
                 }
             }
@@ -89,13 +122,18 @@ const PhishingDetector = () => {
             },
             y: {
                 grid: { color: '#E5E7EB' },
-                ticks: { color: '#6B7280' }
+                ticks: {
+                    color: '#6B7280',
+                    callback: function (value) {
+                        return value + '%';
+                    }
+                }
             }
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-300 py-12 px-4 sm:px-6 lg:px-8 ">
+        <div className="min-h-screen bg-gray-200 py-12 px-4 sm:px-6 lg:px-8 ">
             <div className="max-w-4xl mx-auto">
 
                 <div className="text-center mb-12">
@@ -106,32 +144,32 @@ const PhishingDetector = () => {
                 </div>
 
 
-                <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+                <div className="bg-white rounded-5 shadow-md p-6 mb-8">
                     <div className="space-y-4">
                         <form onSubmit={analyzeUrl} id='formURL'>
                             <div>
                                 <label htmlFor="url-input" className="block text-sm font-medium text-gray-700 mb-1">
                                     Insira a o Link a ser analisado.
                                 </label>
-                                
-                                    <InputGroup className="mb-3 rounded-pill" size="lg">
-                                        <Form.Control
-                                            className='rounded-start-pill'
-                                            placeholder="https://exemplo.com"
-                                            name='url'
-                                            required
-                                        />
-                                        <Button className='rounded-end-pill text-sm' variant="primary" id="button-addon2" type='submit'>
-                                            {loading ? (
+
+                                <InputGroup className="mb-3 rounded-pill fs-6" size="lg">
+                                    <Form.Control
+                                        className='rounded-start-pill'
+                                        placeholder="https://exemplo.com"
+                                        name='url'
+                                        required
+                                    />
+                                    <Button className='rounded-end-pill fs-6' variant="primary" id="button-addon2" type='submit'>
+                                        {loading ? (
                                             <>
                                                 <Spinner animation="border" variant="light" size='sm' className='me-2' />
                                                 Analisando...
                                             </>
                                         ) : 'Analisar'}
-                                        </Button>
-                                    </InputGroup>
+                                    </Button>
+                                </InputGroup>
 
-                                
+
                             </div>
                         </form>
                     </div>
@@ -153,11 +191,20 @@ const PhishingDetector = () => {
                     </div>
                 )}
 
+
+
+
                 {/* Resultados da análise */}
                 {analysis && (
                     <div className="space-y-8">
 
-                        <div className={`bg-white rounded-xl shadow-md overflow-hidden rounded-3xl ring-4 ${analysis.valor === 'Phishing' ? 'ring-red-600/40' : 'ring-green-600/40'}`} id='predictCard'>
+                        <div ref={URLanalisys} className='URL-Analisys bg-black-500'>
+                            <span className="label-url text-black-300">URL analisada:</span>
+                            <span className='theURL'><TextoComPalavrasDestacadas texto={analysis.url} palavrasAlvo={textoDestaque} cor="text-warning fw-bolder" /></span>
+                        </div>
+
+
+                        <div className={`bg-white rounded-5 shadow-md overflow-hidden rounded-3xl mb-7 ring-4  ${analysis?.valor === 'Phishing' ? 'ring-red-600/40' : 'ring-green-600/40'}`} >
                             <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
                                 <span className="fs-5 font-semibold text-gray-900">Resultado da Análise</span>
                             </div>
@@ -166,9 +213,9 @@ const PhishingDetector = () => {
 
                                 <div className='col-span-3 text-md'>
                                     <p className="font-medium text-gray-500 mb-2">Classificação</p>
-                                    <span className={`inline-flex my-auto items-center px-7 py-1 rounded-full text-lg font-medium ${analysis.valor === 'Phishing' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                                    <span className={`inline-flex my-auto items-center px-7 py-1 rounded-full text-lg font-medium ${analysis?.valor === 'Phishing' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
                                         }`}>
-                                        {analysis.valor}
+                                        {analysis?.valor}
                                     </span>
                                 </div>
 
@@ -176,25 +223,25 @@ const PhishingDetector = () => {
                                     <p className="text-sm font-medium text-gray-500 mb-2">Taxa de Probabilidade</p>
                                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                                         <div
-                                            className={`h-2.5 rounded-full ${analysis.valor === 'Phishing' ? 'bg-red-600' : 'bg-green-600'
+                                            className={`h-2.5 rounded-full ${analysis?.valor === 'Phishing' ? 'bg-red-600' : 'bg-green-600'
                                                 }`}
-                                            style={{ width: `${analysis.probabilities}%` }}
+                                            style={{ width: `${analysis?.probabilities}%` }}
                                         ></div>
                                     </div>
                                     <p className="mt-1 text-sm text-gray-700 text-right">
-                                        {analysis.probabilities}% de probabilidade
+                                        {analysis?.probabilities}% de probabilidade
                                     </p>
                                 </div>
 
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-md overflow-hidden px-6 bg-gray-50 border-b border-gray-200">
+                        <div className="bg-white rounded-5 shadow-md overflow-hidden px-6 bg-gray-50 border-b border-gray-200">
 
                             <div className="fs-5 font-semibold text-gray-900 my-3">Fatores Determinantes</div>
 
                             <p className="mt-1 text-sm text-gray-500">
-                                Principais características que influenciaram o resultado
+                                Exibição gráfica das 10 principais características que influenciaram o resultado
                             </p>
 
                             <div className="p-6">
@@ -206,7 +253,7 @@ const PhishingDetector = () => {
                             </div>
                         </div>
 
-                        <FeatureDescription />
+                        <FeatureDescription textoDestaque={textoDestaque} setTextoDestaque={setTextoDestaque} url={analysis.url}/>
 
                     </div>
                 )}

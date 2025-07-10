@@ -1,0 +1,53 @@
+.URL-Analisys {
+    position: sticky;
+    top: -1px;
+    background-color: rgb(255, 255, 255);
+    padding: 30px;
+    border-radius: 30px;
+    border: 2px solid rgb(199, 199, 199);
+    color: rgb(199, 199, 199);
+
+    z-index: 20;
+
+    .label-url {
+        font-size: 12px;
+        font-weight: 700;
+        color: rgb(0, 0, 0, 0.6);
+    }
+}
+
+.URL-Analisys.is-pinned {
+    padding: 20px 50px 20px;
+    border: none;
+    font-size: 20px;
+
+    background-color: rgb(50, 50, 50);
+    border: 2px solid rgb(150, 150, 150);
+    
+    
+    border-bottom-right-radius: 34px;
+    border-bottom-left-radius: 34px;
+
+    
+
+    .label-url {
+    color: rgb(199, 199, 199);
+
+    }
+
+    .theURL {
+        color: rgb(255, 255, 255);
+    }
+}
+
+.theURL {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    color: rgb(0, 0, 0);
+    word-wrap: break-word;
+    word-break: break-all;
+}
